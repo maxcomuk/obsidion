@@ -7843,7 +7843,7 @@ function Library:CreateWindow(WindowInfo)
 
         local lastRun = tick()
         local lastTimeStamp = 0
-        getgenv().globalChatConnection.globalChatConnection = RunService.Heartbeat:Connect(function()
+        getgenv().globalConnections.globalChatConnection = RunService.Heartbeat:Connect(function()
             if tick() - lastRun < 3 and not Tab.TabVisible then return end
             lastRun = tick()
 
