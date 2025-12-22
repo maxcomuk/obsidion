@@ -7833,9 +7833,11 @@ function Library:CreateWindow(WindowInfo)
             return nil
         end
 
-        if getgenv().globalConnections.globalChatConnection then
-            getgenv().globalConnections.globalChatConnection:Disconnect()
-        end
+        pcall(function()
+            if getgenv().globalConnections.globalChatConnection then
+                getgenv().globalConnections.globalChatConnection:Disconnect()
+            end
+        end)
 
         local lastRun = tick()
         local lastTimeStamp = 0
