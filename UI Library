@@ -7838,7 +7838,7 @@ function Library:CreateWindow(WindowInfo)
         end
 
         if getgenv().globalConnections.globalChatConnection then
-            getgenv().globalChatConnection:Disconnect()
+            getgenv().globalConnections.globalChatConnection:Disconnect()
         end
 
         local lastRun = tick()
