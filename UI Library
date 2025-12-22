@@ -1,3 +1,18 @@
+-- Disconnecting Global Connections If Any
+for _, conn in next, getgenv().globalConnections or {} do
+    if type(conn) == "table" then
+        for _, newconn in next, conn do
+            if newconn then
+                newconn:Disconnect()
+            end
+        end
+    elseif conn then
+        conn:Disconnect()
+    end
+end
+
+getgenv().globalConnections = {}
+
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
 end)
@@ -7831,10 +7846,6 @@ function Library:CreateWindow(WindowInfo)
             end
 
             return nil
-        end
-
-        if not getgenv().globalConnections then
-            getgenv().globalConnections = {}
         end
 
         if getgenv().globalConnections.globalChatConnection then
