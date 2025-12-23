@@ -7840,7 +7840,9 @@ function Library:CreateWindow(WindowInfo)
             return nil
         end
 
-        if not aiChat then
+        if aiChat then
+            Tab:AddTextResponse("This is the beginning of your AI conversation. Your AI data / conversation are not collected by vortex hub however the AI model may store your data to improve its features.")
+        else
             pcall(function()
                 if getgenv().globalConnections.globalChatConnection then
                     getgenv().globalConnections.globalChatConnection:Disconnect()
