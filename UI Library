@@ -7478,12 +7478,16 @@ function Library:CreateWindow(WindowInfo)
         local Name = nil
         local Icon = nil
         local Description = nil
+        local aiChat = nil
+        local DB_AUTH_TOKEN = nil
 
         if select("#", ...) == 1 and typeof(...) == "table" then
             local Info = select(1, ...)
             Name = Info.Name or "Tab"
             Icon = Info.Icon
             Description = Info.Description
+            aiChat = Info.aiChat or false
+            DB_AUTH_TOKEN = Info.DB_AUTH_TOKEN or nil
         else
             Name = select(1, ...) or "Tab"
             Icon = select(2, ...)
@@ -7584,7 +7588,7 @@ function Library:CreateWindow(WindowInfo)
         local Tab = {
             Elements = {},
             IsKeyTab = true,
-            maxMessages = 13,
+            maxMessages = aiChat and 5 or 13,
             TabVisible = false
         }
 
@@ -7799,11 +7803,13 @@ function Library:CreateWindow(WindowInfo)
 
         --// Updating Global Chat Messages \\--
         local HttpService = game:GetService("HttpService")
-        local DB_URL = "https://vortex-hub-f6575-default-rtdb.firebaseio.com/messages.json?auth=NtM5wubZ11FuH9DyoOWQtIKyIAcjAbJIMueryP4q"
+        local DB_URL = "https://vortex-hub-f6575-default-rtdb.firebaseio.com/messages.json?auth="
 
         local function getLatestMessages()
+            if not DB_AUTH_TOKEN then return end
+
             local response = request({
-                Url = DB_URL .. "&orderBy=\"timestamp\"&limitToLast=13",
+                Url = DB_URL .. DB_AUTH_TOKEN .. "&orderBy=\"timestamp\"&limitToLast=" .. Tab.maxMessages,
                 Method = "GET"
             })
 
@@ -7834,33 +7840,35 @@ function Library:CreateWindow(WindowInfo)
             return nil
         end
 
-        pcall(function()
-            if getgenv().globalConnections.globalChatConnection then
-                getgenv().globalConnections.globalChatConnection:Disconnect()
-            end
-        end)
+        if not aiChat then
+            pcall(function()
+                if getgenv().globalConnections.globalChatConnection then
+                    getgenv().globalConnections.globalChatConnection:Disconnect()
+                end
+            end)
 
-        local lastRun = tick()
-        local lastTimeStamp = 0
-        getgenv().globalConnections.globalChatConnection = RunService.Heartbeat:Connect(function()
-            if tick() - lastRun < 3 and not Tab.TabVisible then return end
-            lastRun = tick()
+            local lastRun = tick()
+            local lastTimeStamp = 0
+            getgenv().globalConnections.globalChatConnection = RunService.Heartbeat:Connect(function()
+                if tick() - lastRun < 3 and not Tab.TabVisible then return end
+                lastRun = tick()
 
-            local logs = getLatestMessages()
-            if logs ~= nil then
-                for _, data in ipairs(logs) do
-                    if data.timestamp > lastTimeStamp then
-                        lastTimeStamp = data.timestamp
+                local logs = getLatestMessages()
+                if logs ~= nil then
+                    for _, data in ipairs(logs) do
+                        if data.timestamp > lastTimeStamp then
+                            lastTimeStamp = data.timestamp
 
-                        if data.username == game:GetService("Players").LocalPlayer.Name then
-                            Tab:AddTextResponse(data.message, true)
-                        else
-                            Tab:AddTextResponse(data.username .. ": " .. data.message, false)
+                            if data.username == game:GetService("Players").LocalPlayer.Name then
+                                Tab:AddTextResponse(data.message, true)
+                            else
+                                Tab:AddTextResponse(data.username .. ": " .. data.message, false)
+                            end
                         end
                     end
                 end
-            end
-        end)
+            end)
+        end
 
         --// Execution \\--
         if not Library.ActiveTab then
