@@ -7585,7 +7585,6 @@ function Library:CreateWindow(WindowInfo)
             Elements = {},
             IsKeyTab = true,
             maxMessages = 13,
-            globalChatRateLimit = false,
             TabVisible = false
         }
 
@@ -7594,7 +7593,7 @@ function Library:CreateWindow(WindowInfo)
 
             -- Create message frame
             local Message = New("TextLabel", {
-                BackgroundColor3 = isUser and "Green" or "SoftBlue",
+                BackgroundColor3 = isUser and Color3.fromRGB(67, 160, 71) or Color3.fromRGB(173, 216, 230),
                 BackgroundTransparency = 0.95,
                 BorderColor3 = "OutlineColor",
                 BorderSizePixel = 1,
@@ -7691,7 +7690,10 @@ function Library:CreateWindow(WindowInfo)
                 Parent = Holder,
             })
 
-            Button.InputBegan:Connect(function(Input) 
+            local lastMessageTime = 0
+            local rateLimitInterval = 2
+
+            Button.InputBegan:Connect(function(Input)
                 if not IsClickInput(Input) then
                     return
                 end
@@ -7700,13 +7702,10 @@ function Library:CreateWindow(WindowInfo)
                     return
                 end
 
-                if Tab.globalChatRateLimit == false then
-                    Tab.globalChatRateLimit = true
-
+                local currentTime = tick()
+                if currentTime - lastMessageTime >= rateLimitInterval then
+                    lastMessageTime = currentTime
                     Callback(Box.Text)
-                    task.wait(3)
-
-                    Tab.globalChatRateLimit = false
                 else
                     Callback("Rate Limited")
                 end
@@ -7747,6 +7746,7 @@ function Library:CreateWindow(WindowInfo)
                     ImageTransparency = 0,
                 }):Play()
             end
+
             TabContainer.Visible = true
             Footer.Visible = true
             Tab.TabVisible = true
@@ -7783,6 +7783,7 @@ function Library:CreateWindow(WindowInfo)
                     ImageTransparency = 0.5,
                 }):Play()
             end
+
             TabContainer.Visible = false
             Footer.Visible = false
             Tab.TabVisible = false
@@ -7851,7 +7852,9 @@ function Library:CreateWindow(WindowInfo)
                     if data.timestamp > lastTimeStamp then
                         lastTimeStamp = data.timestamp
 
-                        if data.username ~= game:GetService("Players").LocalPlayer.Name then
+                        if data.username == game:GetService("Players").LocalPlayer.Name then
+                            Tab:AddTextResponse(data.message, true)
+                        else
                             Tab:AddTextResponse(data.username .. ": " .. data.message, false)
                         end
                     end
