@@ -7841,7 +7841,7 @@ function Library:CreateWindow(WindowInfo)
         end
 
         if aiChat then
-            Tab:AddTextResponse("This is the beginning of your AI conversation. Your AI data / conversation are not collected by vortex hub however the AI model may store your data to improve its features.")
+            Tab:AddTextResponse("This is the beginning of your AI conversation. Your AI data will not be collected by vortex hub however the AI model may store your data to improve its features so please keep your chats ethical.")
         else
             pcall(function()
                 if getgenv().globalConnections.globalChatConnection then
