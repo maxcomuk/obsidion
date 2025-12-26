@@ -7851,7 +7851,7 @@ function Library:CreateWindow(WindowInfo)
             local lastTimeStamp = 0
             getgenv().globalConnections.globalChatConnection = RunService.Heartbeat:Connect(function()
                 if not Tab.TabVisible then return end
-                if tick() - lastRun < 2 then return end
+                if tick() - lastRun < 1 then return end
                 lastRun = tick()
 
                 local logs = getLatestMessages()
