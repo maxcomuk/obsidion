@@ -7833,8 +7833,6 @@ function Library:CreateWindow(WindowInfo)
                 else
                     Library:Notify("Not found chatlogs in database", 3)
                 end
-            else
-                Library:Notify("Failed to fetch: " .. tostring(response.StatusCode), 3)
             end
 
             return nil
@@ -7852,7 +7850,8 @@ function Library:CreateWindow(WindowInfo)
             local lastRun = tick()
             local lastTimeStamp = 0
             getgenv().globalConnections.globalChatConnection = RunService.Heartbeat:Connect(function()
-                if tick() - lastRun < 3 and not Tab.TabVisible then return end
+                if not Tab.TabVisible then return end
+                if tick() - lastRun < 3 then return end
                 lastRun = tick()
 
                 local logs = getLatestMessages()
