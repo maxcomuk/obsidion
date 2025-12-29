@@ -1995,10 +1995,6 @@ local Library do
                 end
             end)
 
-            function Window:CreateSettingsPage()
-                return Library:CreateSettingsPage(self)
-            end
-
             Window:SetCenter()
             task.wait()
             Window:SetOpen(true)
