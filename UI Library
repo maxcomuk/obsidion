@@ -7830,8 +7830,6 @@ function Library:CreateWindow(WindowInfo)
                     end)
 
                     return messages_container
-                else
-                    Library:Notify("Not found chatlogs in database", 3)
                 end
             end
 
