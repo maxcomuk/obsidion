@@ -2188,27 +2188,27 @@ local Library do
             return setmetatable(Page, Library.Pages)
         end
 
-        Library.Category = function(self, Name)
-            local Items = { } do
-                Items["Category"] = Instances:Create("TextLabel", {
-                    Parent = self.Items["Pages"].Instance,
-                    Name = "\0",
-                    FontFace = Library.Font,
-                    TextColor3 = FromRGB(255, 255, 255),
-                    TextTransparency = 0.5,
-                    Text = Name,
-                    Size = UDim2New(0, 0, 0, 15),
-                    BackgroundTransparency = 1,
-                    BorderSizePixel = 0,
-                    BorderColor3 = FromRGB(0, 0, 0),
-                    AutomaticSize = Enum.AutomaticSize.X,
-                    TextSize = 12,
-                    BackgroundColor3 = FromRGB(255, 255, 255)
-                })                
-            end
-
-            return Items
+    Library.Category = function(self, Name)
+        local Items = { } do
+            Items["Category"] = Instances:Create("TextLabel", {
+                Parent = self.Items["Pages"].Instance,
+                Name = "\0",
+                FontFace = Library.Font,
+                TextColor3 = FromRGB(255, 255, 255),
+                TextTransparency = 0.5,
+                Text = Name,
+                Size = UDim2New(0, 0, 0, 15),
+                BackgroundTransparency = 1,
+                BorderSizePixel = 0,
+                BorderColor3 = FromRGB(0, 0, 0),
+                AutomaticSize = Enum.AutomaticSize.X,
+                TextSize = 12,
+                BackgroundColor3 = FromRGB(255, 255, 255)
+            })                
         end
+
+        return Items
+    end
 
         Library.Pages.SubPage = function(self, Data)
             Data = Data or { }
